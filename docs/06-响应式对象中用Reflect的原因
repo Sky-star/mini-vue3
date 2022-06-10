@@ -1,0 +1,43 @@
+- 使用 Proxy 的一个难点是 this 绑定。我们希望任何方法都绑定到这个 Proxy，而不是目标对象，这样我们也可以拦截它们。值得庆幸的是，ES6 引入了另一个名为 Reflect 的新特性，它允许我们以最小的代价消除了这个问题
+
+- receiver一般就是proxy实例，但是一个对象绑定原型proxy实例，访问这个对象上没有的属性时，会顺着原型链到proxy找，这时receiver指向的是这个对象。
+与Object.defineProperty()不同，用proxy代理，只有访问proxy的实例，才能触发get/set拦截。直接访问不会触发。如果对象的方法里有this，通过this访问的属性或方法能被拦截吗?
+
+- 不做代理话(没有proxy) target__proto__指向fns
+执行target.value，会顺着原型链网上找，找到 fns的value，但这里的调用方是target，所以 this也是target，所以this.name就是 target.name
+场景二:
+做了代理，但没有Reflect没有receiver target.__proto___指向proxy
+执行target.value，会顺着原型链网上找，找到 fns的value，但这里的调用方是fns(没有指定 receiver)
+所以this也是fns，所以this.name就是 fns.name
+
+```js
+const fns = {	
+    name:'abc',	
+    // 绑定一个 get 陷阱	
+    get value () {	
+        console.log(this.name)
+    },
+
+    // 再绑定一个方法到将被代理的对象上	
+    hi() {	
+        console.log(this.name +你好')
+    }
+}
+    	
+const proxy = new Proxy(fns,{
+    get(target, key, recevier) {
+        console.log('拦截挂在fns 上的陷阱'+key)
+        return Reflect.get(target,key,recevier)	
+    }
+})
+
+const target = {
+    name: `target's name`
+}
+
+Object.setPrototypeOf(target, proxy)
+
+target.value
+target.hi()
+	
+```
