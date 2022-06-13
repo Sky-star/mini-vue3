@@ -51,6 +51,8 @@ export function track(target, key) {
         depsMap.set(key, map)
     }
 
+    if (!activeEffect) return
+
     map.add(activeEffect)
     // 将当前的deps进行反向收集 方便日后删除使用
     activeEffect.deps.push(map)
