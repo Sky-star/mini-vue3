@@ -1,3 +1,5 @@
+import { extend } from "../shared"
+
 class ReactiveEffect {
     private _fn: any
     // 将对应的依赖进行反向收集
@@ -17,20 +19,21 @@ class ReactiveEffect {
 
     stop() {
         if (this.active) {
-
-            // 说是stop，实际就是将这个runner从dep中删除了
-            this.deps.forEach((dep: any) => {
-                dep.delete(this)
-            })
-            
+            cleanupEffect(this)
             if (this.onStop) {
                 this.onStop()
             }
-
             // 执行一次就可以了
             this.active = false
         }
     }
+}
+
+function cleanupEffect(effect) {
+    // 说是stop，实际就是将这个runner从dep中删除了
+    effect.deps.forEach((dep: any) => {
+        dep.delete(effect)
+    })
 }
 
 // 依赖收集工作，所谓的依赖收集就是将当前对应的target下的key中的effect保存起来
@@ -81,7 +84,7 @@ export function effect(fn, options?) {
     const _effect = new ReactiveEffect(fn)
 
     // 将传进来的参数赋值给_effect
-    Object.assign(_effect, options)
+    extend(_effect, options)
 
     // 执行一次fn方法
     _effect.run()
