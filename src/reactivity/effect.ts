@@ -1,5 +1,8 @@
 import { extend } from "../shared"
 
+let activeEffect
+let shouldTrack
+
 class ReactiveEffect {
     private _fn: any
     // 将对应的依赖进行反向收集
@@ -13,8 +16,22 @@ class ReactiveEffect {
 
     run() {
         // 第一次执行时需要将当前的effect保存下来
+        // 解决依赖被再次收集导致stop功能失效
+
+        // 当执行stop后就不需要再次进行依赖收集了
+        if (!this.active) {
+            return this._fn()
+        }
+
+        // 每次已经进行依赖收集后就需要将开关关掉
+        shouldTrack = true
         activeEffect = this
-        return this._fn()
+
+        const result = this._fn()
+
+        shouldTrack = false
+
+        return result
     }
 
     stop() {
@@ -38,9 +55,11 @@ function cleanupEffect(effect) {
 
 // 依赖收集工作，所谓的依赖收集就是将当前对应的target下的key中的effect保存起来
 // 留着set被触发时再次执行
-let activeEffect
 const targetMap = new Map()
 export function track(target, key) {
+
+    if (!isTracking()) return
+
     // 构造一个存储target容器
     let depsMap = targetMap.get(target)
     if (!depsMap) {
@@ -54,12 +73,18 @@ export function track(target, key) {
         depsMap.set(key, map)
     }
 
-    if (!activeEffect) return
+    // 优化收集逻辑如果存在则不需要再次收集了
+    if (map.has(activeEffect)) return
 
     map.add(activeEffect)
     // 将当前的deps进行反向收集 方便日后删除使用
     activeEffect.deps.push(map)
 }
+
+function isTracking() {
+    return shouldTrack && activeEffect !== undefined
+}
+
 
 export function trigger(target, key) {
     const depsMap = targetMap.get(target)

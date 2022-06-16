@@ -1,5 +1,5 @@
-import {effect, stop} from "../effect";
-import {reactive} from "../reactive";
+import { effect, stop } from "../effect";
+import { reactive } from "../reactive";
 
 describe('effect', () => {
     it('happy path', () => {
@@ -45,12 +45,12 @@ describe('effect', () => {
         const scheduler = jest.fn(() => {
             run = runner
         })
-        const obj = reactive({foo: 1})
+        const obj = reactive({ foo: 1 })
         const runner = effect(
             () => {
                 dummy = obj.foo
             },
-            {scheduler}
+            { scheduler }
         )
         expect(scheduler).not.toHaveBeenCalled()
         expect(dummy).toBe(1)
@@ -67,14 +67,17 @@ describe('effect', () => {
 
     it('stop', () => {
         let dummy
-        const obj = reactive({prop: 1})
+        const obj = reactive({ prop: 1 })
         const runner = effect(() => {
             dummy = obj.prop
         })
         obj.prop = 2
         expect(dummy).toBe(2)
         stop(runner)
-        obj.prop = 3
+        // obj.prop = 3
+        // obj.prop ++ 测试不能通过的原因是再次触发了get，导致进行了依赖收集
+        // 导致effect被再次执行，之前的stop就失效了
+        obj.prop++
         expect(dummy).toBe(2)
 
         // stopped effect should still be manually callable
