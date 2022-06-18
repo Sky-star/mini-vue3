@@ -9,6 +9,8 @@ describe('readonly', () => {
         expect(wrapped.foo).toBe(1)
         expect(isReadonly(wrapped)).toBe(true)
         expect(isReadonly(orginal)).toBe(false)
+        expect(isReadonly(wrapped.bar)).toBe(true)
+        expect(isReadonly(orginal.bar)).toBe(false)
     });
 
     it('warn when call set', () => {
