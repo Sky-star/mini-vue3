@@ -73,15 +73,20 @@ export function track(target, key) {
         depsMap.set(key, map)
     }
 
-    // 优化收集逻辑如果存在则不需要再次收集了
-    if (map.has(activeEffect)) return
-
-    map.add(activeEffect)
-    // 将当前的deps进行反向收集 方便日后删除使用
-    activeEffect.deps.push(map)
+    trackEffects(map)
 }
 
-function isTracking() {
+export function trackEffects(dep) {
+
+    if (dep.has(activeEffect)) return
+
+    dep.add(activeEffect)
+    // 将当前的deps进行反向收集 方便日后删除使用
+    activeEffect.deps.push(dep)
+}
+
+
+export function isTracking() {
     return shouldTrack && activeEffect !== undefined
 }
 
@@ -89,8 +94,11 @@ function isTracking() {
 export function trigger(target, key) {
     const depsMap = targetMap.get(target)
     const map = depsMap.get(key)
+    triggerEffects(map)
+}
 
-    for (const effect of map) {
+export function triggerEffects(dep) {
+    for (const effect of dep) {
         if (effect.scheduler) {
             effect.scheduler()
         } else {
