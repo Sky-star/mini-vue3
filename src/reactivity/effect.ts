@@ -3,15 +3,17 @@ import { extend } from "../shared"
 let activeEffect
 let shouldTrack
 
-class ReactiveEffect {
+export class ReactiveEffect {
     private _fn: any
     // 将对应的依赖进行反向收集
     deps = []
     // 为了防止重复的进行停止监听，只进行一次就可以了
     active = true
     onStop?: () => void
-    constructor(fn) {
+    public scheduler: Function | undefined
+    constructor(fn, scheduler?: Function) {
         this._fn = fn
+        this.scheduler = scheduler
     }
 
     run() {
