@@ -4,10 +4,10 @@ import { createVnode } from "./vnode"
 export function createApp(rootComponent) {
     return {
         mount(rootContainer) {
-            // 先vnode
-            // 所有的逻辑操作 都会基于 vnode做处理
+            // rootComponent -> vnode
             const vnode = createVnode(rootComponent)
 
+            // 进行渲染操作
             render(vnode, rootContainer)
 
         }
