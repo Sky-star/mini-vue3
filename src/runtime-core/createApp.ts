@@ -9,7 +9,6 @@ export function createApp(rootComponent) {
 
             // 进行渲染操作
             render(vnode, rootContainer)
-
         }
     }
 }
