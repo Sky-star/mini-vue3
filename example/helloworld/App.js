@@ -7,7 +7,13 @@ export const App = {
 			"div",
 			{
 				id: "root",
-				class: ["red", "hard"]
+				class: ["red", "hard"],
+				onClick() {
+					console.log("click")
+				},
+				onMousedown() {
+					console.log("mouse down")
+				}
 			},
 			"hi. " + this.msg
 			// string
