@@ -17,9 +17,9 @@ export const App = {
 			// 老的是 text 新的是text
 			// h(TextToText)
 			// 老的是 text 新的是array
-			h(TextToArray)
+			// h(TextToArray)
 			// 老得是 array 新的是array
-			// h(ArrayToArray)
+			h(ArrayToArray)
 		])
 	}
 }
