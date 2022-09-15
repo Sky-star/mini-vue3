@@ -1,5 +1,4 @@
-import { proxyRefs } from "../reactivity"
-import { shallowReadonly } from "../reactivity/reactive"
+import { shallowReadonly, proxyRefs } from "@guide-mini-vue/reactivity"
 import { emit } from "./componentEmit"
 import { initProps } from "./componentProps"
 import { PublicInstanceHandlers } from "./componentPublicInstance"

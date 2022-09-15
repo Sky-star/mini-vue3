@@ -1,4 +1,4 @@
-import { isObject } from "../shared/index"
+import { isObject } from "@guide-mini-vue/shared"
 import { mutableHandlers, readonlyHandlers, shallowReadonlyHandlers } from "./baseHandlers"
 
 export const enum ReactiveFlags {

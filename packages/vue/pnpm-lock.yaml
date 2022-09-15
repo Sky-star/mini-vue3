@@ -1,0 +1,9 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@guide-mini-vue/compiler-core': workspace:^1.0.0
+  '@guide-mini-vue/runtime-dom': workspace:^1.0.0
+
+dependencies:
+  '@guide-mini-vue/compiler-core': link:../compiler-core
+  '@guide-mini-vue/runtime-dom': link:../runtime-dom

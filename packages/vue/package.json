@@ -8,5 +8,9 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"@guide-mini-vue/compiler-core": "workspace:^1.0.0",
+		"@guide-mini-vue/runtime-dom": "workspace:^1.0.0"
+	}
 }

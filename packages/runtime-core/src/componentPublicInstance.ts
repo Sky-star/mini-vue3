@@ -1,4 +1,4 @@
-import { hasOwn } from "../shared/index"
+import { hasOwn } from "@guide-mini-vue/shared"
 
 const publicPropertiesMap = {
     $el: (i) => i.vnode.el,

@@ -1,0 +1,9 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@guide-mini-vue/reactivity': workspace:^1.0.0
+  '@guide-mini-vue/shared': workspace:^1.0.0
+
+dependencies:
+  '@guide-mini-vue/reactivity': link:../reactivity
+  '@guide-mini-vue/shared': link:../shared

@@ -1,4 +1,4 @@
-import { createRenderer } from '../runtime-core';
+import { createRenderer } from '@guide-mini-vue/runtime-core';
 function createElement(type) {
     return document.createElement(type)
 }
@@ -45,4 +45,4 @@ export function createApp(...args) {
     return renderer.createApp(...args)
 }
 
-export * from "../runtime-core"
+export * from "@guide-mini-vue/runtime-core"

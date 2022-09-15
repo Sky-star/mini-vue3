@@ -1,4 +1,4 @@
-import { ShapeFlags } from "../shared/ShapeFlags"
+import { ShapeFlags } from "@guide-mini-vue/shared"
 
 export const Fragment = Symbol("Fragment")
 export const Text = Symbol("Text")
