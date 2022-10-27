@@ -21,6 +21,52 @@ describe('effect', () => {
 
     });
 
+    it('should clean up effect when effect run', () => {
+        const user = reactive({
+            ok: true,
+            text: 'test',
+        })
+
+        // 分支切换, 当user.ok = false时,user.text不论如何改变
+        // 都不应该再次触发effect
+        let count = 0
+        effect(() => {
+            const _ = user.ok ? user.text : 'not'
+            count++
+        })
+
+        user.ok = false
+
+        expect(count).toBe(2)
+
+        user.text = 'test change'
+
+        expect(count).toBe(2)
+
+    });
+
+    it('should support nest effect', () => {
+        const obj = reactive({
+            foo: 1,
+            bar: 2,
+        })
+
+        let temp1, temp2
+
+        effect(() => {
+            console.log('effectFn 1');
+
+            effect(() => {
+                console.log('effectFn 2');
+                temp2 = obj.bar
+            })
+
+            temp1 = obj.foo
+        })
+
+        obj.foo = 2
+    });
+
     it('should return runner when call effect', () => {
         // 1. effect(fn) -> function(runner) -> fn -> return
         let foo = 10

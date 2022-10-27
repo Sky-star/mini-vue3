@@ -3,6 +3,8 @@ import { extend } from "@guide-mini-vue/shared"
 let activeEffect
 let shouldTrack
 
+const effectStack: ReactiveEffect[] = []
+
 export class ReactiveEffect {
     private _fn: any
     // 将对应的依赖进行反向收集
@@ -27,9 +29,20 @@ export class ReactiveEffect {
 
         // 每次已经进行依赖收集后就需要将开关关掉
         shouldTrack = true
+
+        // 防止分支切换导致的必要的遗留副作用函数
+        cleanupEffect(this)
+
         activeEffect = this
 
+        // 将创建好的effect压入到栈中
+        effectStack.push(this)
+
         const result = this._fn()
+
+        // 执行完成后将,将当前副作用函数弹出栈
+        effectStack.pop()
+        activeEffect = effectStack[effectStack.length - 1]
 
         shouldTrack = false
 
@@ -100,7 +113,10 @@ export function trigger(target, key) {
 }
 
 export function triggerEffects(dep) {
-    for (const effect of dep) {
+    // 这里重新复制一份是为了防止在清除依赖集合时发生的无限循环
+    const effectsToRun: any = new Set(dep)
+
+    for (const effect of effectsToRun) {
         if (effect.scheduler) {
             effect.scheduler()
         } else {
